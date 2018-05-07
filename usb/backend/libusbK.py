@@ -40,11 +40,15 @@ class _libusbK(usb.backend.IBackend):
 		self.lib = cdll.libusbK
 	
 	def enumerate_devices(self):
-		deviceList = KListDevInfo()
+		deviceList = KLIST_DEV_INFO()
 		# LstK_Init(deviceList, flags)
 		ret = self.lib.LstK_Init(byref(deviceList), 0)
 		if ret == 0:
 			print("Error initializing device list")
+		else:
+			count = c_ulong(0)
+			self.lib.LstK_Count(deviceList, byref(count))
+			print("Count: {}".format(count))
 
 
 def get_backend():
